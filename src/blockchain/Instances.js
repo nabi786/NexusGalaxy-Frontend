@@ -65,21 +65,11 @@ const NexusTokenContract = async () => {
       signer
     );
 
-    console.log("this is contract", nexusTokenInstance);
-
     return nexusTokenInstance;
   } catch (err) {
     console.log("this is an Error", err);
   }
 };
-
-// // // // // // // // // / // // // // //
-//
-//
-//       IPFS INSTANCE
-//
-//
-// // // // // // // // // / // / // // //
 
 // exporting functions
 export { ConnectWalelt, getSigner, NexusTokenContract };

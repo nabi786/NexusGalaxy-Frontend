@@ -29,9 +29,9 @@ const initialValues = {
   name: "",
   description: "",
   externalLink: "",
-  tokenAddress: "0xa22D41a5C6C81cF2d20DB8FCE23b44D0Abc5Ee4c",
-  address: "0x420cA0aDe0f455870c2B80A4b93E1A7ae90d7b77",
-  tokenId: "140",
+  tokenAddress: process.env.REACT_APP_NEXUSGALAXYADDR,
+  address: "",
+  tokenId: "0",
   selectedCat: "",
   tokenUri: "",
   chainId: "97",
@@ -67,20 +67,34 @@ const Createnft = () => {
     var file = values.image;
     var name = values.name;
     var desc = values.description;
-    var result = await MintNFTController(file, name, desc);
+    var externalLink = values.externalLink;
+    var royality = values.royality;
+    var result = await MintNFTController(
+      file,
+      name,
+      desc,
+      externalLink,
+      royality
+    );
 
-    // console.log("ValueAppended", values);
-    // let formDataNFT = new FormData();
-    // Object.keys(values).map((keys) => {
-    //   formDataNFT.append(keys, values[keys]);
-    //   console.log("check_KeysCreatNFT", formDataNFT.get(keys));
-    // });
-    // setTimeout(() => {
-    //   dispatch(createNftAction(formDataNFT));
-    //   setTimeout(() => {
-    //     navigate("/profile");
-    //   }, 500);
-    // }, 1000);
+    if (result.success == true) {
+      values.image = result.imgURL;
+      values.tokenId = result.tokenID;
+      values.address = result.userAddr;
+      values.tokenUri = result.tokenURI;
+      console.log("ValueAppended", values);
+      let formDataNFT = new FormData();
+      Object.keys(values).map((keys) => {
+        formDataNFT.append(keys, values[keys]);
+        console.log("check_KeysCreatNFT", formDataNFT.get(keys));
+      });
+      setTimeout(() => {
+        dispatch(createNftAction(formDataNFT));
+        setTimeout(() => {
+          navigate("/profile");
+        }, 500);
+      }, 1000);
+    }
   };
 
   const useStyles = makeStyles(() => ({
