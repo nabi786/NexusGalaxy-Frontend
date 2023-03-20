@@ -4,9 +4,6 @@ import { getSigner, NexusTokenContract } from "./Instances";
 
 // import { create, CID, IPFSHTTPClient } from "ipfs-http-client";
 
-const projectID = process.env.REACT_APP_PROJECTID;
-const projectSecret = process.env.REACT_APP_PROJECTSECRETKEY;
-
 // // // // // // // // // / // // // // //
 //
 //

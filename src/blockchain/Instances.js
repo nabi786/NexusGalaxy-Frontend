@@ -10,9 +10,6 @@ let signer;
 const nexusTokenABI = require("./ABIs/NexusToken.json");
 const nexusTokenAddr = process.env.REACT_APP_NEXUSGALAXYADDR;
 
-// const projectID = process.env.REACT_APP_PROJECTID;
-// const projectSecret = process.env.REACT_APP_PROJECTSECRETKEY;
-
 // // // // // // // // // / // // // // //
 //
 //
