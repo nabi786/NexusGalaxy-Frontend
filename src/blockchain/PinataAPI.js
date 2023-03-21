@@ -54,8 +54,8 @@ const uploadIMGToPinata = async (file) => {
 const uploadJSONTOPinata = async (imgURL, name, desc, externalLink) => {
   try {
     var data = {
-      name: imgURL,
-      name2: name,
+      image: imgURL,
+      name: name,
       desc: desc,
       externalLink: externalLink,
     };

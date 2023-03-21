@@ -78,16 +78,21 @@ const Createnft = () => {
     );
 
     if (result.success == true) {
-      values.image = result.imgURL;
-      values.tokenId = result.tokenID;
-      values.address = result.userAddr;
-      values.tokenUri = result.tokenURI;
       console.log("ValueAppended", values);
-      let formDataNFT = new FormData();
-      Object.keys(values).map((keys) => {
-        formDataNFT.append(keys, values[keys]);
-        console.log("check_KeysCreatNFT", formDataNFT.get(keys));
-      });
+      let formDataNFT = {
+        name: name,
+        description: desc,
+        externalLink: externalLink,
+        tokenAddress: process.env.REACT_APP_NEXUSGALAXYADDR,
+        address: result.userAddr,
+        tokenId: result.tokenID,
+        selectedCat: "0",
+        tokenUri: result.tokenURI,
+        chainId: result.chainID,
+        royality: parseInt(royality) * 100,
+        image: result.imgURL,
+      };
+
       setTimeout(() => {
         dispatch(createNftAction(formDataNFT));
         setTimeout(() => {

@@ -70,12 +70,14 @@ export const saveWalletAddressAction = (wallet) => async (dispatch) => {
 export const createNftAction = (formDataNFT) => async (dispatch) => {
   const accessToken = localStorage?.getItem("authToken");
 
+  console.log("this is formData", formDataNFT);
   fetch(`${BASE_URL}api/nft/create`, {
     method: "post",
     headers: {
+      "Content-Type": "application/json",
       Authorization: `Bearer ${accessToken}`,
     },
-    body: formDataNFT,
+    body: JSON.stringify(formDataNFT),
   }).then((response) => {
     console.log("CeateNFT", response);
     if (response.status === 200) {

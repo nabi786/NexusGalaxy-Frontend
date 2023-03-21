@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import { uploadIMGToPinata, uploadJSONTOPinata } from "./PinataAPI";
-import { getSigner, NexusTokenContract } from "./Instances";
+import { getSigner, NexusTokenContract, getChainID } from "./Instances";
 
 // // // // // // // // // / // // // // //
 //
@@ -13,6 +13,8 @@ const MintNFTController = async (file, name, desc, externalLink, royality) => {
   try {
     var NexusTokenContractInstance = await NexusTokenContract();
     var signer = await getSigner();
+    var chainID = await getChainID();
+    console.log("this is chainID", chainID);
     var userAddr = signer._address;
     console.log("this is signer", userAddr);
 
@@ -40,6 +42,7 @@ const MintNFTController = async (file, name, desc, externalLink, royality) => {
 
         // event MarketItemCreated(uint256 tokenId, address sender, uint256 timestamp);
         var tokenID = "";
+
         await NexusTokenContractInstance.on(
           "MarketItemCreated",
           (tokenId, sender, timestamp) => {
@@ -54,9 +57,9 @@ const MintNFTController = async (file, name, desc, externalLink, royality) => {
         );
 
         await new Promise((resolve) => {
-          return setTimeout(resolve, 15000);
+          return setTimeout(resolve, 20000);
         });
-        return { success: true, tokenID, tokenURI, imgURL, userAddr };
+        return { success: true, tokenID, tokenURI, imgURL, userAddr, chainID };
       }
     }
   } catch (err) {

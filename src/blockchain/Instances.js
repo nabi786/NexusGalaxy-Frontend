@@ -6,6 +6,7 @@ const web3Modal = new Web3Modal({
 });
 
 let signer;
+let chainID;
 
 const nexusTokenABI = require("./ABIs/NexusToken.json");
 const nexusTokenAddr = process.env.REACT_APP_NEXUSGALAXYADDR;
@@ -25,6 +26,7 @@ const ConnectWalelt = async () => {
     var accounts = await library.listAccounts();
     accounts = accounts[0];
     const network = await library.getNetwork();
+    chainID = network.chainId;
     signer = library.getSigner(accounts);
 
     // console.log("this account", accounts[0]);
@@ -47,6 +49,9 @@ const ConnectWalelt = async () => {
 
 const getSigner = () => {
   return signer;
+};
+const getChainID = () => {
+  return chainID;
 };
 
 // // // // // // // // // / // // // // //
@@ -72,4 +77,4 @@ const NexusTokenContract = async () => {
 };
 
 // exporting functions
-export { ConnectWalelt, getSigner, NexusTokenContract };
+export { ConnectWalelt, getSigner, NexusTokenContract, getChainID };
