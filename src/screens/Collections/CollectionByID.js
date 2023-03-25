@@ -18,6 +18,9 @@ import Footer from "../../components/Footer/Footer";
 import NFTimg from "./NFTImg.avif";
 import NFTbg from "./bgNFT.avif";
 import { getSingleCollectionAction } from "../../Redux/actions";
+import BorderColorIcon from "@mui/icons-material/BorderColor";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { deleteCollectionAction } from "../../Redux/actions";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -59,12 +62,19 @@ const CollectionByID = () => {
   const theme = useTheme();
 
   const [profileDataState, setProfileDataState] = useState("test");
+  const [btnCollection, setBtnCollection] = useState(false);
+  const [deletedCollectionNavigate, setdeletedCollectionNavigate] =
+    useState(false);
 
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  const walletAddressGet = useSelector(
+    (state) => state.saveWalletAddressReducer.users
+  );
 
   //   useEffect(() => {
   //     if (ProfileData) {
@@ -96,12 +106,48 @@ const CollectionByID = () => {
   const singleCollectionResponse = useSelector(
     (state) => state.singleCollectionReducer.users
   );
+  const deletedCollectionRes = useSelector(
+    (state) => state.deleteCollectionReducer.users
+  );
 
   useEffect(() => {
     dispatch(getSingleCollectionAction(id));
   }, []);
 
-  console.log("ThisIsSingleCollectionResByID", singleCollectionResponse);
+  console.log(
+    "ThisIsSingleCollectionResByID",
+    singleCollectionResponse?.data?.owner?.address
+  );
+  console.log(
+    "ThisIsSingleCollectionResByID1",
+    singleCollectionResponse?.data?._id
+  );
+
+  const handleDeleteCollection = () => {
+    dispatch(deleteCollectionAction(id));
+    setdeletedCollectionNavigate(true);
+  };
+
+  useEffect(() => {
+    if (
+      deletedCollectionRes.status === true &&
+      deletedCollectionNavigate === true
+    ) {
+      setTimeout(() => {
+        navigate("/MyCollections");
+        setdeletedCollectionNavigate(false);
+      }, 1000);
+    }
+  }, [deletedCollectionRes, deletedCollectionNavigate]);
+
+  useEffect(() => {
+    if (walletAddressGet === singleCollectionResponse?.data?.owner?.address) {
+      setBtnCollection(true);
+    } else {
+      setBtnCollection(false);
+    }
+  }, [walletAddressGet, singleCollectionResponse]);
+
   return (
     <Box
       sx={{
@@ -139,7 +185,56 @@ const CollectionByID = () => {
                 backgroundPosition: "center",
                 borderRadius: "18px",
               }}
-            ></Box>
+            >
+              {btnCollection ? (
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    width: "100%",
+                    justifyContent: "flex-end",
+                    p: "15px",
+                  }}
+                >
+                  <Box>
+                    <Button
+                      variant="contained"
+                      sx={{
+                        textTransform: "capitalize",
+                        backgroundColor: "background.fontClr",
+                        "&:hover": {
+                          backgroundColor: "#69686d",
+                        },
+                      }}
+                      endIcon={<BorderColorIcon />}
+                      onClick={() =>
+                        navigate(
+                          `/MyCollections/Collection/Update/${singleCollectionResponse?.data?._id}`
+                        )
+                      }
+                    >
+                      Edit
+                    </Button>
+                  </Box>
+                  <Box sx={{ ml: "10px" }}>
+                    <Button
+                      variant="contained"
+                      sx={{
+                        textTransform: "capitalize",
+                        backgroundColor: "background.fontClr",
+                        "&:hover": {
+                          backgroundColor: "#69686d",
+                        },
+                      }}
+                      endIcon={<DeleteIcon />}
+                      onClick={handleDeleteCollection}
+                    >
+                      Delete
+                    </Button>
+                  </Box>
+                </Box>
+              ) : null}
+            </Box>
             <Box
               sx={{
                 width: "180px",

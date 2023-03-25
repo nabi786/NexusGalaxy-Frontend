@@ -44,7 +44,6 @@ import Tooltip from "@mui/material/Tooltip";
 import LogoDark from "./LogoForBlackNavbar.png";
 import LogoWhite from "./LogoForWhiteNavbar.png";
 
-import { logoutWeb3Modal } from "../../blockchain/Instances";
 export default function Navbar(props) {
   const theme = useTheme();
 
@@ -87,7 +86,7 @@ export default function Navbar(props) {
   };
 
   const disconnectWeb3Modal = async () => {
-    await logoutWeb3Modal();
+    await web3Modal.clearCachedProvider();
     setConnectedAccount("");
     setProfileDropDown(false);
   };
@@ -444,6 +443,17 @@ export default function Navbar(props) {
                   >
                     Connect Wallet
                   </Button> */}
+                  <Button
+                    sx={{ color: "text.primary", textTransform: "capitalize" }}
+                    variant="text"
+                    onClick={() => {
+                      handleClick();
+                      handleToggle();
+                      navigate("/MyCollections");
+                    }}
+                  >
+                    My Collection
+                  </Button>
 
                   <Button
                     sx={{ color: "text.primary", textTransform: "capitalize" }}

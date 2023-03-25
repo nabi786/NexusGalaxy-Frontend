@@ -8,9 +8,12 @@ import TextInputField from "../TextInputField";
 import PreviewImage from "../PreviewImage";
 import { useTheme } from "@mui/material/styles";
 import { Button } from "@mui/material";
-import { profileUpdateAction } from "../../Redux/actions";
+import {
+  getAllCategoriesAction,
+  profileUpdateAction,
+} from "../../Redux/actions";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { styled } from "@mui/material/styles";
 // import { makeStyles } from "@mui/material/styles";
 import { makeStyles } from "@material-ui/core/styles";
@@ -18,6 +21,8 @@ import { ExpandMoreRounded } from "@material-ui/icons";
 import { InputLabel } from "@mui/material";
 import { createCollectionAction } from "../../Redux/actions";
 import CircularProgress from "@mui/material/CircularProgress";
+import avatarImg from "./avatarMen.png";
+import bgImg from "./bg.jpg";
 
 const CreateCollection = () => {
   let navigate = useNavigate();
@@ -33,14 +38,23 @@ const CreateCollection = () => {
 
   console.log("ResOfCreatedCollection", CreateCollectionRes);
   const initialValues = {
-    address: "0x420cA0aDe0f455870c2B80A4b93E1A7ae90d7b77",
+    address: walletAddressGet,
     name: "",
-    category: "",
+    categoryID: "",
     description: "",
     externalUrl: "",
     avatar: null,
     background: null,
   };
+  const initialValuesOfUpdateCollection = {
+    address: walletAddressGet,
+    name: "",
+    description: "",
+    externalUrl: "",
+    avatar: null,
+    background: null,
+  };
+  let { id } = useParams();
 
   const [avatarPro, setAvatarPro] = useState("");
   const [bgPro, setBgPro] = useState("");
@@ -55,29 +69,54 @@ const CreateCollection = () => {
     handleChange,
     handleSubmit,
     setFieldValue,
-  } = useFormik({
-    initialValues,
-    validationSchema: createCollectionSchema,
-    onSubmit: (values, action) => {
-      console.log("CheckValueOfCreateCollection", values);
+  } = useFormik(
+    id
+      ? {
+          initialValuesOfUpdateCollection,
+          onSubmit: (values, action) => {
+            console.log("CheckValueOfCreateCollection", values);
 
-      let formData = new FormData();
+            let formData = new FormData();
 
-      Object.keys(values).map((keys) => {
-        formData.append(keys, values[keys]);
-        console.log("check_KeysCreateCollection", formData.get(keys));
-      });
+            Object.keys(values).map((keys) => {
+              formData.append(keys, values[keys]);
+              console.log("check_KeysCreateCollection", formData.get(keys));
+            });
 
-      setTimeout(() => {
-        dispatch(createCollectionAction(formData));
-        setCreateCollectionNavigate(true);
-        setLoading(true);
-        // setTimeout(() => {
-        //   navigate("/Collections");
-        // }, 1000);
-      }, 1000);
-    },
-  });
+            setTimeout(() => {
+              // dispatch(createCollectionAction(formData));
+              setCreateCollectionNavigate(true);
+              setLoading(true);
+              // setTimeout(() => {
+              //   navigate("/Collections");
+              // }, 1000);
+            }, 1000);
+          },
+        }
+      : {
+          initialValues,
+          validationSchema: createCollectionSchema,
+          onSubmit: (values, action) => {
+            console.log("CheckValueOfCreateCollection", values);
+
+            let formData = new FormData();
+
+            Object.keys(values).map((keys) => {
+              formData.append(keys, values[keys]);
+              console.log("check_KeysCreateCollection", formData.get(keys));
+            });
+
+            setTimeout(() => {
+              dispatch(createCollectionAction(formData));
+              setCreateCollectionNavigate(true);
+              setLoading(true);
+              // setTimeout(() => {
+              //   navigate("/Collections");
+              // }, 1000);
+            }, 1000);
+          },
+        }
+  );
 
   useEffect(() => {
     if (
@@ -86,7 +125,9 @@ const CreateCollection = () => {
     ) {
       setTimeout(() => {
         setLoading(false);
-        navigate("/Collections");
+        id
+          ? navigate(`/MyCollections/Collection/${id}`)
+          : navigate("/MyCollections");
         setCreateCollectionNavigate(false);
       }, 1000);
     }
@@ -96,10 +137,6 @@ const CreateCollection = () => {
 
   const [userName, setName] = useState("");
   const [selectValue, setselectValue] = useState("");
-
-  const handleChangeSelect = (event) => {
-    setselectValue(event.target.value);
-  };
 
   const useStyles = makeStyles(() => ({
     formControl: {
@@ -174,6 +211,21 @@ const CreateCollection = () => {
     },
     getContentAnchorEl: null,
   };
+
+  useEffect(() => {
+    dispatch(getAllCategoriesAction());
+  }, []);
+
+  const allCategoriesRes = useSelector(
+    (state) => state.getAllCategoriesReducer.users
+  );
+  console.log("AllCategoriesResFromCollection", allCategoriesRes);
+
+  const handleChangeSelect = (event) => {
+    setselectValue(event.target.value);
+  };
+
+  console.log("ValueSelected", selectValue);
 
   return (
     <>
@@ -250,58 +302,56 @@ const CreateCollection = () => {
                   touched={touched.externalUrl}
                 />
               </Box>
-
-              <Box className={styles.inputWrapper}>
-                {/* <TextInputField
-                  label="Lastname"
-                  name="lastName"
-                  type="Select"
-                  value={values.lastName}
-                  onChangeHandler={handleChange}
-                  onBlurHandler={handleBlur}
-                  placeholder="Last Name"
-                  errors={errors.lastName}
-                  touched={touched.lastName}
-                /> */}
-                <InputLabel
-                  sx={{ color: theme.palette.background.fontClr, mb: "10px" }}
-                >
-                  category
-                </InputLabel>
-                <FormControl
-                  //   sx={{ m: 1, minWidth: 120 }}
-                  className={classes.formControl}
-                >
-                  <Select
-                    value={values.category}
-                    name="category"
-                    variant="outlined"
-                    onChange={handleChange}
-                    displayEmpty
-                    MenuProps={menuProps}
-                    inputProps={{ "aria-label": "Without label" }}
-                    // className={classes.select}
-                    classes={{
-                      select: classes.select,
-                      icon: classes.selectIcon,
-                    }}
-                    IconComponent={ExpandMoreRounded}
+              {id ? null : (
+                <Box className={styles.inputWrapper}>
+                  <InputLabel
+                    sx={{ color: theme.palette.background.fontClr, mb: "10px" }}
                   >
-                    <MenuItem value="" sx={{ color: "white" }}>
-                      <em>None</em>
-                    </MenuItem>
-                    <MenuItem value={10} sx={{ color: "white" }}>
-                      Arts
-                    </MenuItem>
-                    <MenuItem value={20} sx={{ color: "white" }}>
-                      Fashion
-                    </MenuItem>
-                    <MenuItem value={30} sx={{ color: "white" }}>
-                      Sports
-                    </MenuItem>
-                  </Select>
-                </FormControl>
-              </Box>
+                    category
+                  </InputLabel>
+                  <FormControl
+                    //   sx={{ m: 1, minWidth: 120 }}
+                    className={classes.formControl}
+                  >
+                    <Select
+                      value={values.categoryID}
+                      // value={selectValue}
+                      name="categoryID"
+                      variant="outlined"
+                      onChange={handleChange}
+                      displayEmpty
+                      MenuProps={menuProps}
+                      inputProps={{ "aria-label": "Without label" }}
+                      // className={classes.select}
+                      classes={{
+                        select: classes.select,
+                        icon: classes.selectIcon,
+                      }}
+                      IconComponent={ExpandMoreRounded}
+                    >
+                      <MenuItem value="" sx={{ color: "white" }}>
+                        <em>None</em>
+                      </MenuItem>
+                      {allCategoriesRes?.data &&
+                        allCategoriesRes?.data?.map((v, i) => (
+                          <MenuItem value={v?._id} sx={{ color: "white" }}>
+                            {v?.name}
+                          </MenuItem>
+                        ))}
+                      {/* <MenuItem value={10} sx={{ color: "white" }}>
+                     Arts
+                   </MenuItem>
+                   <MenuItem value={20} sx={{ color: "white" }}>
+                     Fashion
+                   </MenuItem>
+                   <MenuItem value={30} sx={{ color: "white" }}>
+                     Sports
+                   </MenuItem> */}
+                    </Select>
+                  </FormControl>
+                </Box>
+              )}
+
               <Box className={styles.buttonWrapper}>
                 <Button
                   variant="contained"
@@ -343,10 +393,7 @@ const CreateCollection = () => {
                 {values.avatar ? (
                   <PreviewImage file={values.avatar} alt="avatar_img" />
                 ) : (
-                  <img
-                    src="./ozean_Images/Images/avatar.png"
-                    alt="avatar_img"
-                  />
+                  <img src={avatarImg} alt="avatar_img" />
                 )}
                 <Box className={styles.pencilIconWrapper}>
                   <input
@@ -391,10 +438,7 @@ const CreateCollection = () => {
                 {values.background ? (
                   <PreviewImage file={values.background} alt="cover_img" />
                 ) : (
-                  <img
-                    src="./ozean_Images/Images/coverimage.png"
-                    alt="avatar_img"
-                  />
+                  <img src={bgImg} alt="avatar_img" />
                 )}
                 <Box className={styles.uploadBtnWrapper}>
                   <input

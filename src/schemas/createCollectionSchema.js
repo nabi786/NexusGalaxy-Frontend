@@ -3,7 +3,7 @@ import { SUPPORTED_IMAGE_FORMATS } from "../config";
 
 export const createCollectionSchema = Yup.object({
   name: Yup.string().min(2).max(25).required("Please enter collection name"),
-  category: Yup.string().min(2).max(25).required("Please enter Category"),
+  categoryID: Yup.string().min(2).max(25).required("Please enter Category"),
   description: Yup.string()
     .min(2)
     .max(1000)

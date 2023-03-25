@@ -112,7 +112,6 @@ export const collectionCardData = [
 //Base_url of APIs
 
 const BASE_URL = "https://quaint-fatigues-mite.cyclic.app/";
-// const BASE_URL = "http://localhost:3000/";
 
 export default BASE_URL;
 

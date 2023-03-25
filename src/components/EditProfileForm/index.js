@@ -19,6 +19,7 @@ const EditProfileForm = () => {
   const avatarFileRef = useRef(null);
   const coverImageFileRef = useRef(null);
   let dispatch = useDispatch();
+
   const walletAddressGet = useSelector(
     (state) => state.saveWalletAddressReducer.users
   );

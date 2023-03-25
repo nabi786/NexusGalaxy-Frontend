@@ -7,6 +7,9 @@ import createCollectionReducer from "./createCollectionReducer";
 import dashUserDataReducer from "./dashUserDataReducer";
 import getAllCollectionReducer from "./getAllCollectionReducer";
 import singleCollectionReducer from "./singleCollectionReducer";
+import collectionByAddressReducer from "./collectionByAddressReducer";
+import deleteCollectionReducer from "./deleteCollectionReducer";
+import getAllCategoriesReducer from "./getAllCategoriesReducer";
 
 const rootReducer = combineReducers({
   loginReducer,
@@ -17,6 +20,9 @@ const rootReducer = combineReducers({
   createCollectionReducer,
   getAllCollectionReducer,
   singleCollectionReducer,
+  collectionByAddressReducer,
+  deleteCollectionReducer,
+  getAllCategoriesReducer,
 });
 
 export default rootReducer;

@@ -58,7 +58,8 @@ export const profileUpdateAction = (formData) => async (dispatch) => {
 // -------------Save Wallet Address Action starts here ---------------
 
 export const saveWalletAddressAction = (wallet) => async (dispatch) => {
-  const retrnObj = { type: "SaveWallet", payload: wallet };
+  let newAddress = wallet.toLowerCase();
+  const retrnObj = { type: "SaveWallet", payload: newAddress };
   console.log("ObjectReturnWalletAddress", retrnObj);
   dispatch(retrnObj);
 };
@@ -70,7 +71,6 @@ export const saveWalletAddressAction = (wallet) => async (dispatch) => {
 export const createNftAction = (formDataNFT) => async (dispatch) => {
   const accessToken = localStorage?.getItem("authToken");
 
-  console.log("this is formData", formDataNFT);
   fetch(`${BASE_URL}api/nft/create`, {
     method: "post",
     headers: {
@@ -199,3 +199,77 @@ export const getSingleCollectionAction = (id) => async (dispatch) => {
 };
 
 // ----------- GetSingleCollectionById Action ends here --------
+
+// ------------ GetCollectionByWalletAdress Action starts from here  --------------
+
+export const getCollectionByAddressAction =
+  (pageCount, walletAddressGet) => async (dispatch) => {
+    axios({
+      method: "post",
+      url: `${BASE_URL}api/collection/CollectionByAddress`,
+      data: {
+        address: walletAddressGet,
+        page: pageCount,
+        size: 6,
+      },
+    }).then((response) => {
+      console.log("CollectionByAddress", response);
+      const retrnObj = { type: "CollectionByAddress", payload: response.data };
+      dispatch(retrnObj);
+    });
+  };
+
+// ------------ GetCollectionByWalletAdress Action ends here  ---------------------
+
+// ------------- DeleteMyCollection Action start from here -------------------------
+
+export const deleteCollectionAction = (id) => async (dispatch) => {
+  const accessToken = localStorage?.getItem("authToken");
+  axios({
+    method: "post",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+    url: `${BASE_URL}api/collection/delete`,
+    data: {
+      id: id,
+    },
+  })
+    .then((response) => {
+      console.log("DeleteCollection", response);
+
+      const retrnObj = { type: "DeleteCollection", payload: response.data };
+      dispatch(retrnObj);
+      if (response?.data?.status === true) {
+        Swal.fire("Success", response?.data?.message, "success", {
+          buttons: false,
+          timer: 2000,
+        });
+      }
+    })
+    .catch((error) => {
+      Swal.fire("Failed", error?.message, "error", {
+        buttons: false,
+        timer: 2000,
+      });
+    });
+};
+
+// ------------- DeleteMyCollection Action ends here -------------------------
+
+// -------------- GetAllCategories Action starts from here -------------------
+export const getAllCategoriesAction = () => async (dispatch) => {
+  // fetch(`${BASE_URL}api/category/getAllCategories`, { method: "GET" })
+  // .then((response) => response.json())
+  axios({
+    method: "GET",
+    url: `${BASE_URL}api/category/getAllCategories`,
+  }).then((Data) => {
+    console.log("GetAllCategoriesREs", Data);
+    const retrnObj = { type: "GetAllCategories", payload: Data.data };
+    console.log("GetAllCategoriesObj", retrnObj);
+    dispatch(retrnObj);
+  });
+};
+
+// -------------- GetAllCategories Action ends here -------------------

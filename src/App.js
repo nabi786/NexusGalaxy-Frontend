@@ -33,6 +33,8 @@ import { CreateCollecyionScreen } from "./screens/CreateCollecyionScreen/CreateC
 import Collection from "./screens/Collections/Collection";
 import CollectionCard from "./screens/Collections/CollectionCard";
 import CollectionByID from "./screens/Collections/CollectionByID";
+import MyCollection from "./screens/MyCollections/MyCollection";
+import UpdateCollection from "./screens/UpdateCollection/UpdateCollection";
 // import { Web3ReactProvider } from "@web3-react/core";
 // import Web3 from "web3";
 
@@ -146,10 +148,23 @@ function App() {
             element={<Collection setCollectionId={setCollectionId} />}
           />
           <Route exact path="/CollectionCard" element={<CollectionCard />} />
+          <Route exact path="/MyCollections" element={<MyCollection />} />
+
           <Route
             exact
             path="/Collections/Collection/:id"
             element={<CollectionByID />}
+          />
+
+          <Route
+            exact
+            path="/MyCollections/Collection/:id"
+            element={<CollectionByID />}
+          />
+          <Route
+            exact
+            path="/MyCollections/Collection/Update/:id"
+            element={<CreateCollecyionScreen />}
           />
 
           <Route

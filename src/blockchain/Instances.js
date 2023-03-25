@@ -86,6 +86,7 @@ const logoutWeb3Modal = async () => {
 // // // // // // // // // / // / // // //
 const NexusTokenContract = async () => {
   try {
+    console.log(nexusTokenAddr);
     var nexusTokenInstance = new ethers.Contract(
       nexusTokenAddr,
       nexusTokenABI,
