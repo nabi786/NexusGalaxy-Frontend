@@ -1,5 +1,6 @@
 import { ethers } from "ethers";
 import { uploadIMGToPinata, uploadJSONTOPinata } from "./PinataAPI";
+import React, { useEffect, useState } from "react";
 import { getSigner, NexusTokenContract, getChainID } from "./Instances";
 
 // // // // // // // // // / // // // // //
@@ -9,7 +10,8 @@ import { getSigner, NexusTokenContract, getChainID } from "./Instances";
 //
 //
 // // // // // // // // // / // / // // //
-const MintNFTController = async (file, name, desc, externalLink, royality) => {
+
+const useMintNFT = async (file, name, desc, externalLink, royality) => {
   try {
     var NexusTokenContractInstance = await NexusTokenContract();
     var signer = await getSigner();
@@ -56,15 +58,31 @@ const MintNFTController = async (file, name, desc, externalLink, royality) => {
           }
         );
 
-        await new Promise((resolve) => {
-          return setTimeout(resolve, 20000);
-        });
-        return { success: true, tokenID, tokenURI, imgURL, userAddr, chainID };
+        // await new Promise((resolve) => {
+        //   return setTimeout(resolve, 20000);
+        // });
+
+        // useEffect(() => {
+        //   function checkIfWorking() {
+        //     console.log("hurry, its working perfectly");
+        //   }
+
+        //   checkIfWorking();
+        // }, []);
+        return {
+          success: true,
+          tokenID,
+          tokenURI,
+          imgURL,
+          userAddr,
+          chainID,
+        };
       }
     }
   } catch (err) {
+    console.log("this is err", err);
     return { success: false };
   }
 };
 
-export { MintNFTController };
+export { useMintNFT };

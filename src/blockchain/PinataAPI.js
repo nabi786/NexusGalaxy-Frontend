@@ -1,8 +1,8 @@
 import axios from "axios";
 var pinataJWT = process.env.REACT_APP_PINATATOKEN;
 const JWT = `Bearer ${pinataJWT}`;
-var baseURL = process.env.REACT_APP_PINATABASEURL;
-const tokenURIBaseURL = process.env.REACT_APP_PINATATOKENURI;
+var baseURL = process.env.REACT_APP_PINATAImageURI;
+// const tokenURIBaseURL = process.env.REACT_APP_PINATATOKENURI;
 
 var apiKey = process.env.REACT_APP_PINATAAPIKey;
 var secretKey = process.env.REACT_APP_PINATASecretKey;
@@ -73,7 +73,7 @@ const uploadJSONTOPinata = async (imgURL, name, desc, externalLink) => {
       .then((response) => response.json())
       .then((data) => {
         console.log("Success:", data);
-        tokenURI = tokenURIBaseURL + data.IpfsHash;
+        tokenURI = baseURL + data.IpfsHash;
       });
     return { success: true, tokenURI };
   } catch (err) {

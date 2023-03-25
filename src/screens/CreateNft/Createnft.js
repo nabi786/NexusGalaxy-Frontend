@@ -1,5 +1,5 @@
 import React, { useMemo, useRef, useState } from "react";
-import { MintNFTController } from "../../blockchain/minNft";
+import { useMintNFT } from "../../blockchain/useMintNFT";
 import {
   Box,
   Typography,
@@ -44,6 +44,7 @@ const Createnft = () => {
   let dispatch = useDispatch();
   const avatarFileRef = useRef(null);
   let navigate = useNavigate();
+  const [isNftMinted, setNftMinted] = useState(false);
   //   const coverImageFileRef = useRef(null);
   // const [image, setImage] = useState("");
 
@@ -69,16 +70,9 @@ const Createnft = () => {
     var desc = values.description;
     var externalLink = values.externalLink;
     var royality = values.royality;
-    var result = await MintNFTController(
-      file,
-      name,
-      desc,
-      externalLink,
-      royality
-    );
+    var result = await useMintNFT(file, name, desc, externalLink, royality);
 
     if (result.success == true) {
-      console.log("ValueAppended", values);
       let formDataNFT = {
         name: name,
         description: desc,
