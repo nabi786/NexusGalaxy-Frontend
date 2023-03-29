@@ -23,80 +23,61 @@ import { createCollectionAction } from "../../Redux/actions";
 import CircularProgress from "@mui/material/CircularProgress";
 import avatarImg from "./avatarMen.png";
 import bgImg from "./bg.jpg";
+import { updateCollectionSchema } from "../../schemas/updateCollectionSchema";
+import pencilIcon from "./Pencil.svg";
+import { updateCollectionAction } from "../../Redux/actions";
 
-const CreateCollection = () => {
+const UpdateCollection = () => {
   let navigate = useNavigate();
   const avatarFileRef = useRef(null);
   const coverImageFileRef = useRef(null);
   let dispatch = useDispatch();
-  const walletAddressGet = useSelector(
-    (state) => state.saveWalletAddressReducer.users
-  );
-  const CreateCollectionRes = useSelector(
-    (state) => state.createCollectionReducer.users
+
+  const updateCollectionRes = useSelector(
+    (state) => state.updateCollectionReducer.users
   );
 
-  console.log("ResOfCreatedCollection", CreateCollectionRes);
-  const initialValues = {
-    address: walletAddressGet,
-    name: "",
-    categoryID: "",
-    description: "",
-    externalUrl: "",
-    avatar: null,
-    background: null,
-  };
+  console.log("ResOfUpdateCollection", updateCollectionRes);
 
-  const [avatarPro, setAvatarPro] = useState("");
-  const [bgPro, setBgPro] = useState("");
+  let { id } = useParams();
+
   const [CreateCollectionNavigate, setCreateCollectionNavigate] =
     useState(false);
   const [isLoading, setLoading] = useState(false);
-  const {
-    values,
-    errors,
-    touched,
-    handleBlur,
-    handleChange,
-    handleSubmit,
-    setFieldValue,
-  } = useFormik({
-    initialValues,
-    validationSchema: createCollectionSchema,
-    onSubmit: (values, action) => {
-      console.log("CheckValueOfCreateCollection", values);
+  //   const {
+  //     values,
+  //     errors,
+  //     touched,
+  //     handleBlur,
+  //     handleChange,
+  //     handleSubmit,
+  //     setFieldValue,
+  //   } = useFormik({
+  //     initialValuesOfUpdateCollection,
+  //     validationSchema: updateCollectionSchema,
+  //     onSubmit: (values, action) => {
+  //       console.log("CheckValueOfCreateCollection", values);
 
-      let formData = new FormData();
+  //       let formData = new FormData();
 
-      Object.keys(values).map((keys) => {
-        formData.append(keys, values[keys]);
-        console.log("check_KeysCreateCollection", formData.get(keys));
-      });
+  //       Object.keys(values).map((keys) => {
+  //         formData.append(keys, values[keys]);
+  //         console.log("check_KeysCreateCollection", formData.get(keys));
+  //       });
 
-      setTimeout(() => {
-        dispatch(createCollectionAction(formData));
-        setCreateCollectionNavigate(true);
-        setLoading(true);
-      }, 1000);
-    },
-  });
-
-  useEffect(() => {
-    if (
-      CreateCollectionRes.status === true &&
-      CreateCollectionNavigate === true
-    ) {
-      setTimeout(() => {
-        setLoading(false);
-        navigate("/MyCollections");
-        setCreateCollectionNavigate(false);
-      }, 1000);
-    }
-  }, [CreateCollectionRes]);
+  //       setTimeout(() => {
+  //         // dispatch(createCollectionAction(formData));
+  //         setCreateCollectionNavigate(true);
+  //         setLoading(true);
+  //         // setTimeout(() => {
+  //         //   navigate("/Collections");
+  //         // }, 1000);
+  //       }, 1000);
+  //     },
+  //   });
 
   const theme = useTheme();
 
-  const [userName, setName] = useState("");
   const [selectValue, setselectValue] = useState("");
 
   const useStyles = makeStyles(() => ({
@@ -173,20 +154,47 @@ const CreateCollection = () => {
     getContentAnchorEl: null,
   };
 
-  useEffect(() => {
-    dispatch(getAllCategoriesAction());
-  }, []);
-
-  const allCategoriesRes = useSelector(
-    (state) => state.getAllCategoriesReducer.users
-  );
-  console.log("AllCategoriesResFromCollection", allCategoriesRes);
-
-  const handleChangeSelect = (event) => {
-    setselectValue(event.target.value);
-  };
+  //   console.log("AllCategoriesResFromCollection", allCategoriesRes);
 
   console.log("ValueSelected", selectValue);
+
+  const [name, setName] = useState("");
+  const [desp, setDesp] = useState("");
+  const [externalLink, setExternalLink] = useState("");
+  const [avatar, setAvatar] = useState("");
+  const [background, setBackground] = useState("");
+
+  let formData = new FormData();
+
+  console.log("avatarCheck", avatar);
+
+  const handleUpdateForm = () => {
+    formData.append("name", name);
+    formData.append("id", id);
+    formData.append("description", desp);
+    formData.append("externalUrl", externalLink);
+    formData.append("avatar", avatar);
+    formData.append("background", background);
+
+    setTimeout(() => {
+      dispatch(updateCollectionAction(formData));
+      setCreateCollectionNavigate(true);
+      setLoading(true);
+    }, 1000);
+  };
+
+  useEffect(() => {
+    if (
+      updateCollectionRes?.success === true &&
+      CreateCollectionNavigate === true
+    ) {
+      setTimeout(() => {
+        setLoading(false);
+        navigate(`/MyCollections/Collection/${id}`);
+        setCreateCollectionNavigate(false);
+      }, 1000);
+    }
+  }, [updateCollectionRes]);
 
   return (
     <>
@@ -211,42 +219,21 @@ const CreateCollection = () => {
                 New Collection
               </Typography>
             </Box>
-            <Box component="form" onSubmit={handleSubmit} autoComplete="off">
+            <Box>
               <Box className={styles.inputWrapper}>
                 <TextInputField
                   label="Name"
-                  name="name"
-                  value={values.name}
-                  onChangeHandler={handleChange}
-                  // onChange={(e) => setname(e.target.value)}
-                  onBlurHandler={handleBlur}
+                  value={name}
+                  onChangeHandler={(e) => setName(e.target.value)}
                   placeholder="name"
-                  errors={errors.name}
-                  touched={touched.name}
                 />
               </Box>
-              {/* <Box className={styles.inputWrapper}>
-                <TextInputField
-                  label="Lastname"
-                  name="lastName"
-                  value={values.lastName}
-                  onChangeHandler={handleChange}
-                  onBlurHandler={handleBlur}
-                  placeholder="Last Name"
-                  errors={errors.lastName}
-                  touched={touched.lastName}
-                />
-              </Box> */}
               <Box className={styles.inputWrapper}>
                 <TextInputField
                   label="Description"
-                  name="description"
-                  value={values.bio}
-                  onChangeHandler={handleChange}
-                  onBlurHandler={handleBlur}
+                  value={desp}
+                  onChangeHandler={(e) => setDesp(e.target.value)}
                   placeholder="Description"
-                  errors={errors.description}
-                  touched={touched.description}
                   rows={7}
                   multiline
                 />
@@ -254,64 +241,11 @@ const CreateCollection = () => {
               <Box className={styles.inputWrapper}>
                 <TextInputField
                   label="External Link"
-                  name="externalUrl"
-                  value={values.externalUrl}
-                  onChangeHandler={handleChange}
-                  onBlurHandler={handleBlur}
+                  value={externalLink}
+                  onChangeHandler={(e) => setExternalLink(e.target.value)}
                   placeholder="External Link"
-                  errors={errors.externalUrl}
-                  touched={touched.externalUrl}
                 />
               </Box>
-
-              <Box className={styles.inputWrapper}>
-                <InputLabel
-                  sx={{ color: theme.palette.background.fontClr, mb: "10px" }}
-                >
-                  category
-                </InputLabel>
-                <FormControl
-                  //   sx={{ m: 1, minWidth: 120 }}
-                  className={classes.formControl}
-                >
-                  <Select
-                    value={values.categoryID}
-                    // value={selectValue}
-                    name="categoryID"
-                    variant="outlined"
-                    onChange={handleChange}
-                    displayEmpty
-                    MenuProps={menuProps}
-                    inputProps={{ "aria-label": "Without label" }}
-                    // className={classes.select}
-                    classes={{
-                      select: classes.select,
-                      icon: classes.selectIcon,
-                    }}
-                    IconComponent={ExpandMoreRounded}
-                  >
-                    <MenuItem value="" sx={{ color: "white" }}>
-                      <em>None</em>
-                    </MenuItem>
-                    {allCategoriesRes?.data &&
-                      allCategoriesRes?.data?.map((v, i) => (
-                        <MenuItem value={v?._id} sx={{ color: "white" }}>
-                          {v?.name}
-                        </MenuItem>
-                      ))}
-                    {/* <MenuItem value={10} sx={{ color: "white" }}>
-                     Arts
-                   </MenuItem>
-                   <MenuItem value={20} sx={{ color: "white" }}>
-                     Fashion
-                   </MenuItem>
-                   <MenuItem value={30} sx={{ color: "white" }}>
-                     Sports
-                   </MenuItem> */}
-                  </Select>
-                </FormControl>
-              </Box>
-
               <Box className={styles.buttonWrapper}>
                 <Button
                   variant="contained"
@@ -320,8 +254,9 @@ const CreateCollection = () => {
                     backgroundColor: "background.fontClr",
                     width: "200px",
                   }}
+                  onClick={handleUpdateForm}
                 >
-                  Create Collection
+                  Update Collection
                   {isLoading ? (
                     <CircularProgress
                       color="secondary"
@@ -350,8 +285,8 @@ const CreateCollection = () => {
                 </Typography>
               </Box>
               <Box className={styles.avatarImgWrapper}>
-                {values.avatar ? (
-                  <PreviewImage file={values.avatar} alt="avatar_img" />
+                {avatar ? (
+                  <PreviewImage file={avatar} alt="avatar_img" />
                 ) : (
                   <img src={avatarImg} alt="avatar_img" />
                 )}
@@ -362,23 +297,15 @@ const CreateCollection = () => {
                     type="file"
                     accept="image/*"
                     onChange={(e) => {
-                      setFieldValue("avatar", e.target.files[0]);
+                      setAvatar(e.target.files[0]);
                     }}
                   />
                   <img
-                    src="./ozean_Images/Icons/Pencil.svg"
+                    src={pencilIcon}
                     alt="cant load image"
                     onClick={() => avatarFileRef.current.click()}
                   />
                 </Box>
-                {errors.avatar && touched.avatar ? (
-                  <Typography
-                    sx={{ color: "#9c3c3c", mt: "5px", ml: "10px" }}
-                    variant="caption"
-                  >
-                    {errors.avatar}
-                  </Typography>
-                ) : null}
               </Box>
             </Box>
             <Box className={styles.coverImgUploadWrapper}>
@@ -395,8 +322,8 @@ const CreateCollection = () => {
                 </Typography>
               </Box>
               <Box className={styles.coverImgWrapper}>
-                {values.background ? (
-                  <PreviewImage file={values.background} alt="cover_img" />
+                {background ? (
+                  <PreviewImage file={background} alt="cover_img" />
                 ) : (
                   <img src={bgImg} alt="avatar_img" />
                 )}
@@ -407,8 +334,7 @@ const CreateCollection = () => {
                     accept="image/*"
                     type="file"
                     onChange={(e) => {
-                      setFieldValue("background", e.target.files[0]);
-                      setBgPro(e.target.files[0]);
+                      setBackground(e.target.files[0]);
                     }}
                   />
                   <Button
@@ -422,14 +348,6 @@ const CreateCollection = () => {
                   </Button>
                 </Box>
               </Box>
-              {errors.background && touched.background ? (
-                <Typography
-                  sx={{ color: "#9c3c3c", mt: "5px", ml: "10px" }}
-                  variant="caption"
-                >
-                  {errors.background}
-                </Typography>
-              ) : null}
             </Box>
           </Box>
         </Box>
@@ -438,4 +356,4 @@ const CreateCollection = () => {
   );
 };
 
-export default CreateCollection;
+export default UpdateCollection;

@@ -1,7 +1,7 @@
 import axios from "axios";
 var pinataJWT = process.env.REACT_APP_PINATATOKEN;
 const JWT = `Bearer ${pinataJWT}`;
-var baseURL = process.env.REACT_APP_PINATAImageURI;
+var baseURL = process.env.REACT_APP_PINATABASEURL;
 // const tokenURIBaseURL = process.env.REACT_APP_PINATATOKENURI;
 
 var apiKey = process.env.REACT_APP_PINATAAPIKey;

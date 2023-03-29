@@ -1,5 +1,5 @@
-import React, { useMemo, useRef, useState } from "react";
-import { useMintNFT } from "../../blockchain/useMintNFT";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { MintNFTController } from "../../blockchain/use-MinNft";
 import {
   Box,
   Typography,
@@ -8,6 +8,7 @@ import {
   InputLabel,
   Select,
   FormControl,
+  CircularProgress,
 } from "@mui/material";
 import Layout from "../../components/Layout";
 import { useTheme } from "@mui/material/styles";
@@ -17,36 +18,46 @@ import InsertPhotoIcon from "@mui/icons-material/InsertPhoto";
 import TextInputField from "../../components/TextInputField";
 import PreviewImage from "../../components/PreviewImage";
 import Dropzone from "react-dropzone";
-import { useDispatch } from "react-redux";
-import { createNftAction } from "../../Redux/actions";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  createNftAction,
+  getCollectionByAddressAction,
+} from "../../Redux/actions";
 import { useNavigate } from "react-router-dom";
 import imageBg from "./bg.jpg";
 import { makeStyles } from "@material-ui/core/styles";
 import { ExpandMoreRounded } from "@material-ui/icons";
 import Slider from "@mui/material/Slider";
-
-const initialValues = {
-  name: "",
-  description: "",
-  externalLink: "",
-  tokenAddress: process.env.REACT_APP_NEXUSGALAXYADDR,
-  address: "",
-  tokenId: "0",
-  selectedCat: "",
-  tokenUri: "",
-  chainId: "97",
-  royality: "",
-  image: null,
-};
+import Swal from "sweetalert2";
 
 const Createnft = () => {
   const theme = useTheme();
   let dispatch = useDispatch();
   const avatarFileRef = useRef(null);
   let navigate = useNavigate();
-  const [isNftMinted, setNftMinted] = useState(false);
   //   const coverImageFileRef = useRef(null);
   // const [image, setImage] = useState("");
+
+  const walletAddressGet = useSelector(
+    (state) => state.saveWalletAddressReducer.users
+  );
+
+  const initialValues = {
+    name: "",
+    description: "",
+    externalLink: "",
+    tokenAddress: process.env.REACT_APP_NEXUSGALAXYADDR,
+    address: walletAddressGet,
+    tokenId: "0",
+    CollectionID: "",
+    tokenUri: "",
+    chainId: "97",
+    royality: "",
+    image: null,
+  };
+
+  const [navigateProfile, setNavigateProfile] = useState(false);
+  const [isLoading, setLoading] = useState(false);
 
   const {
     values,
@@ -64,37 +75,75 @@ const Createnft = () => {
     },
   });
 
+  const { mintNFT } = MintNFTController();
   const handleSubmitValue = async () => {
-    var file = values.image;
-    var name = values.name;
-    var desc = values.description;
-    var externalLink = values.externalLink;
-    var royality = values.royality;
-    var result = await useMintNFT(file, name, desc, externalLink, royality);
+    if (values.CollectionID != "") {
+      var file = values.image;
+      var name = values.name;
+      var desc = values.description;
+      var externalLink = values.externalLink;
+      var royality = values.royality;
+      var CollectionID = values.CollectionID;
+      setLoading(true);
+      mintNFT(
+        file,
+        name,
+        desc,
+        externalLink,
+        royality,
+        CollectionID,
+        setLoading
+      );
+    } else {
+      if (
+        AllCollectionRes?.status === true &&
+        AllCollectionRes?.data?.length >= 1
+      ) {
+        Swal.fire(
+          "Failed",
+          "Select Collection First",
+          "error",
 
-    if (result.success == true) {
-      let formDataNFT = {
-        name: name,
-        description: desc,
-        externalLink: externalLink,
-        tokenAddress: process.env.REACT_APP_NEXUSGALAXYADDR,
-        address: result.userAddr,
-        tokenId: result.tokenID,
-        selectedCat: "0",
-        tokenUri: result.tokenURI,
-        chainId: result.chainID,
-        royality: parseInt(royality) * 100,
-        image: result.imgURL,
-      };
+          {
+            buttons: false,
+            timer: 2000,
+          }
+        );
+      } else if (
+        AllCollectionRes?.status === true &&
+        AllCollectionRes?.data?.length <= 0
+      ) {
+        Swal.fire(
+          "Failed",
+          "Create Collection First",
+          "error",
 
-      setTimeout(() => {
-        dispatch(createNftAction(formDataNFT));
+          {
+            buttons: false,
+            timer: 2000,
+          }
+        );
         setTimeout(() => {
-          navigate("/profile");
-        }, 500);
-      }, 1000);
+          navigate("/CreateCollection");
+        }, 2000);
+      } else {
+        console.log("error");
+      }
     }
   };
+
+  const CreateNFTRes = useSelector((state) => state.createNFTReducer.users);
+
+  console.log("CheckingResOfCreatedNFT", CreateNFTRes);
+  console.log("WalletTEst", walletAddressGet);
+
+  useEffect(() => {
+    if (navigateProfile === true && CreateNFTRes?.status === true) {
+      setLoading(false);
+      navigate("/profile");
+      setNavigateProfile(false);
+    }
+  }, [CreateNFTRes, navigateProfile]);
 
   const useStyles = makeStyles(() => ({
     formControl: {
@@ -172,7 +221,26 @@ const Createnft = () => {
   };
   const [sliderVal, setSliderVal] = useState("");
 
+  const [size, setSize] = React.useState("*");
+  const [pageCount, setPageCount] = React.useState("*");
+
   console.log("SliderValueIs=", sliderVal);
+
+  useEffect(() => {
+    dispatch(getCollectionByAddressAction(pageCount, walletAddressGet, size));
+  }, [walletAddressGet]);
+
+  const AllCollectionRes = useSelector(
+    (state) => state.collectionByAddressReducer.users
+  );
+
+  console.log("ThisIsAllMyCollection", AllCollectionRes);
+
+  const [res, setRes] = useState("");
+
+  const handleChange1 = (e) => {
+    console.log("SelectedCollection", e.target.value);
+  };
 
   return (
     <Box>
@@ -345,15 +413,15 @@ const Createnft = () => {
                 <InputLabel
                   sx={{ color: theme.palette.background.fontClr, mb: "10px" }}
                 >
-                  category
+                  Collection
                 </InputLabel>
                 <FormControl
                   //   sx={{ m: 1, minWidth: 120 }}
                   className={classes.formControl}
                 >
                   <Select
-                    value={values.selectedCat}
-                    name="selectedCat"
+                    value={values.CollectionID}
+                    name="CollectionID"
                     variant="outlined"
                     onChange={handleChange}
                     displayEmpty
@@ -369,15 +437,12 @@ const Createnft = () => {
                     <MenuItem value="" sx={{ color: "white" }}>
                       <em>None</em>
                     </MenuItem>
-                    <MenuItem value={10} sx={{ color: "white" }}>
-                      Arts
-                    </MenuItem>
-                    <MenuItem value={20} sx={{ color: "white" }}>
-                      Fashion
-                    </MenuItem>
-                    <MenuItem value={30} sx={{ color: "white" }}>
-                      Sports
-                    </MenuItem>
+                    {AllCollectionRes?.data &&
+                      AllCollectionRes?.data?.map((v, i) => (
+                        <MenuItem value={v?._id} sx={{ color: "white" }}>
+                          {v?.name}
+                        </MenuItem>
+                      ))}
                   </Select>
                 </FormControl>
               </Box>
@@ -421,9 +486,19 @@ const Createnft = () => {
                   }}
                   sx={{
                     backgroundColor: "background.fontClr",
+                    textTransform: "capitalize",
                   }}
                 >
-                  Submit
+                  Create NFT
+                  {isLoading ? (
+                    <CircularProgress
+                      color="secondary"
+                      size="10"
+                      sx={{ ml: "10px", width: "30px" }}
+                    />
+                  ) : (
+                    ""
+                  )}
                 </Button>
               </Box>
             </Box>

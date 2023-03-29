@@ -31,7 +31,7 @@ const ConnectWalelt = async () => {
     chainID = network.chainId;
     signer = provider.getSigner(accounts);
 
-    console.log("this account", signer);
+    console.log("this account007", chainID);
     // console.log("this account");
 
     return { success: true, network: network.chainId, accounts };

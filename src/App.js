@@ -34,7 +34,7 @@ import Collection from "./screens/Collections/Collection";
 import CollectionCard from "./screens/Collections/CollectionCard";
 import CollectionByID from "./screens/Collections/CollectionByID";
 import MyCollection from "./screens/MyCollections/MyCollection";
-import UpdateCollection from "./screens/UpdateCollection/UpdateCollection";
+import { UpdateCollectionScreen } from "./screens/CreateCollecyionScreen/UpdateCollectionScreen";
 // import { Web3ReactProvider } from "@web3-react/core";
 // import Web3 from "web3";
 
@@ -164,7 +164,7 @@ function App() {
           <Route
             exact
             path="/MyCollections/Collection/Update/:id"
-            element={<CreateCollecyionScreen />}
+            element={<UpdateCollectionScreen />}
           />
 
           <Route

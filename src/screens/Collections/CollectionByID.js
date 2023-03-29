@@ -21,6 +21,7 @@ import { getSingleCollectionAction } from "../../Redux/actions";
 import BorderColorIcon from "@mui/icons-material/BorderColor";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { deleteCollectionAction } from "../../Redux/actions";
+import CollectionCard from "../../components/CollectionCard";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -306,8 +307,10 @@ const CollectionByID = () => {
               Offers
             </TabPanel>
           </Box> */}
+          <Box>{/* <CollectionCard /> */}</Box>
         </Box>
       </Box>
+
       <Footer />
     </Box>
   );

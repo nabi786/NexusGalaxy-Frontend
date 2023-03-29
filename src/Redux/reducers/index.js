@@ -10,6 +10,7 @@ import singleCollectionReducer from "./singleCollectionReducer";
 import collectionByAddressReducer from "./collectionByAddressReducer";
 import deleteCollectionReducer from "./deleteCollectionReducer";
 import getAllCategoriesReducer from "./getAllCategoriesReducer";
+import updateCollectionReducer from "./updateCollectionReducer";
 
 const rootReducer = combineReducers({
   loginReducer,
@@ -23,6 +24,7 @@ const rootReducer = combineReducers({
   collectionByAddressReducer,
   deleteCollectionReducer,
   getAllCategoriesReducer,
+  updateCollectionReducer,
 });
 
 export default rootReducer;

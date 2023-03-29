@@ -85,6 +85,16 @@ export default function Navbar(props) {
     }
   };
 
+  // handle ChainID
+  window.ethereum.on("accountsChanged", function (accounts) {
+    connectWeb3Wallet();
+  });
+
+  // detect Network change
+  window.ethereum.on("chainChanged", function (networkId) {
+    connectWeb3Wallet();
+  });
+
   const disconnectWeb3Modal = async () => {
     await web3Modal.clearCachedProvider();
     setConnectedAccount("");

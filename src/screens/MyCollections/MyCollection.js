@@ -119,13 +119,14 @@ const MyCollection = () => {
 
   console.log("this is Address", walletAddressGet);
 
-  const [pageCount, setPageCount] = React.useState(1);
+  const [pageCount, setPageCount] = useState(1);
   const handleChangePagination = (event, value) => {
     setPageCount(value);
-    dispatch(getCollectionByAddressAction(value, walletAddressGet));
+    dispatch(getCollectionByAddressAction(value, walletAddressGet, size));
   };
 
   const [value, setValue] = React.useState(0);
+  const [size, setSize] = React.useState(6);
 
   const handleChangeTab = (event, newValue) => {
     setValue(newValue);
@@ -134,22 +135,13 @@ const MyCollection = () => {
   let dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getCollectionByAddressAction(pageCount, walletAddressGet));
+    dispatch(getCollectionByAddressAction(pageCount, walletAddressGet, size));
   }, [walletAddressGet]);
-
-  useEffect(() => {
-    dispatch(getAllCategoriesAction());
-  });
 
   const AllCollectionRes = useSelector(
     (state) => state.collectionByAddressReducer.users
   );
 
-  const allCategoriesRes = useSelector(
-    (state) => state.getAllCategoriesReducer.users
-  );
-
-  console.log("AllCategoriesResFromCollection", allCategoriesRes);
   // console.log("thisIsResCollection", AllCollectionRes);
 
   return (

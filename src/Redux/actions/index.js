@@ -78,31 +78,36 @@ export const createNftAction = (formDataNFT) => async (dispatch) => {
       Authorization: `Bearer ${accessToken}`,
     },
     body: JSON.stringify(formDataNFT),
-  }).then((response) => {
-    console.log("CeateNFT", response);
-    if (response.status === 200) {
-      Swal.fire("Success", "Sucessfully created", "success", {
-        buttons: false,
-        timer: 2000,
-      });
-    }
-    if (response.status === 500) {
-      Swal.fire(
-        "Failed",
-        response.status,
-        "error",
-
-        {
+  })
+    .then((res) => res.json())
+    .then((response) => {
+      console.log("CeateNFTResAction", response);
+      if (response.status === true) {
+        Swal.fire("Success", response?.message, "success", {
           buttons: false,
           timer: 2000,
-        }
-      );
-    }
+        });
+      }
+      // if (response.status === 500) {
+      //   Swal.fire(
+      //     "Failed",
+      //     response.status,
+      //     "error",
 
-    const retrnObj = { type: "CreateNFT", payload: response };
-    console.log("ObjectReturn", retrnObj);
-    dispatch(retrnObj);
-  });
+      //     {
+      //       buttons: false,
+      //       timer: 2000,
+      //     }
+      //   );
+      // }
+
+      const retrnObj = { type: "CreateNFT", payload: response };
+      console.log("ObjectReturn", retrnObj);
+      dispatch(retrnObj);
+    })
+    .catch((err) => {
+      console.log("CeateNFTResActionErr", err);
+    });
 };
 
 // --------------- createNFT Action ends here -------------
@@ -203,14 +208,14 @@ export const getSingleCollectionAction = (id) => async (dispatch) => {
 // ------------ GetCollectionByWalletAdress Action starts from here  --------------
 
 export const getCollectionByAddressAction =
-  (pageCount, walletAddressGet) => async (dispatch) => {
+  (pageCount, walletAddressGet, size) => async (dispatch) => {
     axios({
       method: "post",
       url: `${BASE_URL}api/collection/CollectionByAddress`,
       data: {
         address: walletAddressGet,
         page: pageCount,
-        size: 6,
+        size: size,
       },
     }).then((response) => {
       console.log("CollectionByAddress", response);
@@ -273,3 +278,35 @@ export const getAllCategoriesAction = () => async (dispatch) => {
 };
 
 // -------------- GetAllCategories Action ends here -------------------
+
+// ----------- UpdateCollectionAction starts from here ----------------
+export const updateCollectionAction = (formData) => async (dispatch) => {
+  const accessToken = localStorage?.getItem("authToken");
+  axios({
+    method: "post",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+    url: `${BASE_URL}api/collection/update`,
+    data: formData,
+  })
+    .then((response) => {
+      console.log("UpdateCollection", response);
+      const retrnObj = { type: "UpdateCollection", payload: response.data };
+      dispatch(retrnObj);
+      if (response?.data?.success === true) {
+        Swal.fire("Success", response?.data?.msg, "success", {
+          buttons: false,
+          timer: 2000,
+        });
+      }
+    })
+    .catch((error) => {
+      Swal.fire("Failed", error?.msg, "error", {
+        buttons: false,
+        timer: 2000,
+      });
+    });
+};
+
+// ----------- UpdateCollectionAction ends here -----------------------
