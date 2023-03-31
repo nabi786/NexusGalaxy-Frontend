@@ -17,9 +17,11 @@
             min-height: 400px
             height: auto
             width: 100%
+            object-fit: cover
     .right
         // border: 2px solid $yellow
         width: 50%
+        padding: 1rem
         +m
             width: 95%
         .name
@@ -53,8 +55,8 @@
                     transition: all 0.2s
                     &:hover
                         background-color: #69686d
-                    &:last-child
-                        background-color: transparent
+                    // &:last-child
+                    //     background-color: transparent
                         // color: $light-blue
     .reportCard
         // border: 2px solid red
@@ -71,7 +73,7 @@
                     &:last-child
                         color: $grey
                         font-size: 0.8rem
-                        margin-top: 0.5rem
+                        // margin-top: 0.5rem
                 h3
                     color: $white
             .button

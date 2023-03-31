@@ -3,6 +3,7 @@ import styles from "./Wallet.module.sass";
 import { Box, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import AccountBalanceWalletRoundedIcon from "@mui/icons-material/AccountBalanceWalletRounded";
+import walletImg from "./BG.svg";
 
 export default function WalletHolder() {
   const theme = useTheme();
@@ -16,7 +17,7 @@ export default function WalletHolder() {
           color: "text.primary",
         }}
       >
-        <img src="./ozean_Images/Images/BG.svg" />
+        <img src={walletImg} />
         <Box className={styles.text}>
           <Typography
             className={styles.heading}

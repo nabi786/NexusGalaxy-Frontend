@@ -1,12 +1,13 @@
 import React from "react";
 import styles from "./Credit.module.sass";
-import { Box, Typography} from "@mui/material";
+import { Box, Typography } from "@mui/material";
+import CardImg from "./Credit card.png";
 
 export default function CreditCard() {
   return (
     <>
       <Box className={styles.bg}>
-        <img src="./ozean_Images/Icons/Credit card.png" />
+        <img src={CardImg} />
         {/* <Box className={styles.top}>
           <Typography>$1,903</Typography>
           <img src="./ozean_Images/Icons/Chip.svg" />

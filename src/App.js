@@ -169,7 +169,7 @@ function App() {
 
           <Route
             exact
-            path="/item-details"
+            path="/nft/:tokenAddress/:tokenId"
             element={
               <div className={styles.container}>
                 <ItemDetails />

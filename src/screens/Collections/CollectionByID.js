@@ -1,6 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Box, Button, IconButton, Typography } from "@mui/material";
-import { useParams } from "react-router-dom";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Grid,
+  IconButton,
+  Pagination,
+  Typography,
+} from "@mui/material";
+import { Link, useParams } from "react-router-dom";
 import styles from "../Profile/Profile.module.sass";
 import { useTheme } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
@@ -22,6 +30,9 @@ import BorderColorIcon from "@mui/icons-material/BorderColor";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { deleteCollectionAction } from "../../Redux/actions";
 import CollectionCard from "../../components/CollectionCard";
+import { getNFTbyCollectionIdAction } from "../../Redux/actions";
+import { getChainID } from "../../blockchain/use-Instances";
+import ScreenLoading from "../../components/Loading/ScreenLoading";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -77,6 +88,9 @@ const CollectionByID = () => {
     (state) => state.saveWalletAddressReducer.users
   );
 
+  const chainIdGet = useSelector((state) => state.saveChainIdReducer.users);
+
+  console.log("CheckingChainIDFRes", chainIdGet);
   //   useEffect(() => {
   //     if (ProfileData) {
   //       setProfileDataState(ProfileData);
@@ -111,18 +125,25 @@ const CollectionByID = () => {
     (state) => state.deleteCollectionReducer.users
   );
 
+  const [pageCount, setPageCount] = React.useState(1);
+  const [chainId, setChainId] = useState("");
+
+  const handleChangePagination = (event, value) => {
+    setPageCount(value);
+    dispatch(getNFTbyCollectionIdAction(id, value, chainIdGet));
+  };
+
   useEffect(() => {
     dispatch(getSingleCollectionAction(id));
-  }, []);
+    dispatch(getNFTbyCollectionIdAction(id, pageCount, chainIdGet));
+  }, [chainIdGet]);
 
-  console.log(
-    "ThisIsSingleCollectionResByID",
-    singleCollectionResponse?.data?.owner?.address
+  const nftsByCollectionIdRes = useSelector(
+    (state) => state.nftByCollectionIdReducer.users
   );
-  console.log(
-    "ThisIsSingleCollectionResByID1",
-    singleCollectionResponse?.data?._id
-  );
+
+  console.log("nftsByCollectionIdRes", nftsByCollectionIdRes?.data);
+  console.log("ThisIsSingleCollectionResByID1", singleCollectionResponse);
 
   const handleDeleteCollection = () => {
     dispatch(deleteCollectionAction(id));
@@ -157,122 +178,122 @@ const CollectionByID = () => {
       }}
     >
       <Navbar />
-
-      <Box
-        className={styles.profileContainerWrapper}
-        sx={{
-          bgcolor: "background.default",
-          color: "text.primary",
-        }}
-      >
+      {singleCollectionResponse?.data ? (
         <Box
-          className={styles.profileContainer}
+          className={styles.profileContainerWrapper}
           sx={{
             bgcolor: "background.default",
             color: "text.primary",
           }}
         >
-          <Box className={styles.bioDataWrapper}>
-            <Box
-              sx={{
-                width: "100%",
-                height: "200px",
-                backgroundImage:
-                  profileDataState === "test"
-                    ? `url(${singleCollectionResponse?.data?.background?.url})`
-                    : `url(${NFTbg})`,
-                backgroundSize: "cover",
-                backgroundRepeat: "no-repeat",
-                backgroundPosition: "center",
-                borderRadius: "18px",
-              }}
-            >
-              {btnCollection ? (
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "row",
-                    width: "100%",
-                    justifyContent: "flex-end",
-                    p: "15px",
-                  }}
-                >
-                  <Box>
-                    <Button
-                      variant="contained"
-                      sx={{
-                        textTransform: "capitalize",
-                        backgroundColor: "background.fontClr",
-                        "&:hover": {
-                          backgroundColor: "#69686d",
-                        },
-                      }}
-                      endIcon={<BorderColorIcon />}
-                      onClick={() =>
-                        navigate(
-                          `/MyCollections/Collection/Update/${singleCollectionResponse?.data?._id}`
-                        )
-                      }
-                    >
-                      Edit
-                    </Button>
+          <Box
+            className={styles.profileContainer}
+            sx={{
+              bgcolor: "background.default",
+              color: "text.primary",
+            }}
+          >
+            <Box className={styles.bioDataWrapper}>
+              <Box
+                sx={{
+                  width: "100%",
+                  height: "200px",
+                  backgroundImage:
+                    profileDataState === "test"
+                      ? `url(${singleCollectionResponse?.data?.background?.url})`
+                      : `url(${NFTbg})`,
+                  backgroundSize: "cover",
+                  backgroundRepeat: "no-repeat",
+                  backgroundPosition: "center",
+                  borderRadius: "18px",
+                }}
+              >
+                {btnCollection ? (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "row",
+                      width: "100%",
+                      justifyContent: "flex-end",
+                      p: "15px",
+                    }}
+                  >
+                    <Box>
+                      <Button
+                        variant="contained"
+                        sx={{
+                          textTransform: "capitalize",
+                          backgroundColor: "background.fontClr",
+                          "&:hover": {
+                            backgroundColor: "#69686d",
+                          },
+                        }}
+                        endIcon={<BorderColorIcon />}
+                        onClick={() =>
+                          navigate(
+                            `/MyCollections/Collection/Update/${singleCollectionResponse?.data?._id}`
+                          )
+                        }
+                      >
+                        Edit
+                      </Button>
+                    </Box>
+                    <Box sx={{ ml: "10px" }}>
+                      <Button
+                        variant="contained"
+                        sx={{
+                          textTransform: "capitalize",
+                          backgroundColor: "background.fontClr",
+                          "&:hover": {
+                            backgroundColor: "#69686d",
+                          },
+                        }}
+                        endIcon={<DeleteIcon />}
+                        onClick={handleDeleteCollection}
+                      >
+                        Delete
+                      </Button>
+                    </Box>
                   </Box>
-                  <Box sx={{ ml: "10px" }}>
-                    <Button
-                      variant="contained"
-                      sx={{
-                        textTransform: "capitalize",
-                        backgroundColor: "background.fontClr",
-                        "&:hover": {
-                          backgroundColor: "#69686d",
-                        },
-                      }}
-                      endIcon={<DeleteIcon />}
-                      onClick={handleDeleteCollection}
-                    >
-                      Delete
-                    </Button>
-                  </Box>
-                </Box>
-              ) : null}
-            </Box>
-            <Box
-              sx={{
-                width: "180px",
-                height: "180px",
-                backgroundImage:
-                  profileDataState === "test"
-                    ? `url(${singleCollectionResponse?.data?.avatar?.url})`
-                    : `url(${NFTimg})`,
-                backgroundSize: "cover",
-                backgroundRepeat: "no-repeat",
-                backgroundPosition: "start",
-                border: `5px solid ${theme.palette.background.fontClr}`,
-                borderRadius: "50%",
-                margin: "-90px auto 1.2rem",
-              }}
-            ></Box>
-            <Box className={styles.bioDataInfoWrapper}>
-              <Typography className={styles.nameText}>
-                {profileDataState === "test"
-                  ? singleCollectionResponse?.data?.name
-                  : "asdsad@_39-89"}
-              </Typography>
+                ) : null}
+              </Box>
+              <Box
+                sx={{
+                  width: "180px",
+                  height: "180px",
+                  backgroundImage:
+                    profileDataState === "test"
+                      ? `url(${singleCollectionResponse?.data?.avatar?.url})`
+                      : `url(${NFTimg})`,
+                  backgroundSize: "cover",
+                  backgroundRepeat: "no-repeat",
+                  backgroundPosition: "start",
+                  border: `5px solid ${theme.palette.background.fontClr}`,
+                  borderRadius: "50%",
+                  margin: "-90px auto 1.2rem",
+                }}
+              ></Box>
+              <Box className={styles.bioDataInfoWrapper}>
+                <Typography className={styles.nameText}>
+                  {profileDataState === "test"
+                    ? singleCollectionResponse?.data?.name
+                    : "asdsad@_39-89"}
+                </Typography>
 
-              <Typography variant="body2" className={styles.descriptionText}>
-                {profileDataState === "test"
-                  ? singleCollectionResponse?.data?.owner?.address
-                  : "0x...jkbcv90"}
-              </Typography>
+                <Typography variant="body2" className={styles.descriptionText}>
+                  {profileDataState === "test"
+                    ? singleCollectionResponse?.data?.owner?.address
+                    : "0x...jkbcv90"}
+                </Typography>
 
-              <Typography className={styles.descriptionText}>
-                {profileDataState === "test"
-                  ? singleCollectionResponse?.data?.description
-                  : "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi arcu mi, cursus sed ante et, eleifend feugiat diam. Maecenas viverra lectus id odio laoreet, sit amet rhoncus magna volutpat."}
-              </Typography>
+                <Typography className={styles.descriptionText}>
+                  {profileDataState === "test"
+                    ? singleCollectionResponse?.data?.description
+                    : "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi arcu mi, cursus sed ante et, eleifend feugiat diam. Maecenas viverra lectus id odio laoreet, sit amet rhoncus magna volutpat."}
+                </Typography>
+              </Box>
             </Box>
-          </Box>
-          {/* <Box className={styles.nftsByCategoriesWrapper}>
+            {/* <Box className={styles.nftsByCategoriesWrapper}>
             <Box sx={{ width: "100%" }}>
               <Tabs
                 sx={{ "& button": { textTransform: "capitalize" } }}
@@ -307,9 +328,86 @@ const CollectionByID = () => {
               Offers
             </TabPanel>
           </Box> */}
-          <Box>{/* <CollectionCard /> */}</Box>
+            {nftsByCollectionIdRes?.data?.length >= 1 ? (
+              <Box>
+                <Grid container spacing={2}>
+                  {nftsByCollectionIdRes?.data &&
+                    nftsByCollectionIdRes?.data?.map((v, i) => {
+                      console.log("thisIsNFTDetail", v);
+                      return (
+                        <Grid
+                          item
+                          lg={
+                            nftsByCollectionIdRes?.data?.length >= 3
+                              ? 4
+                              : nftsByCollectionIdRes?.data?.length == 1
+                              ? 12
+                              : nftsByCollectionIdRes?.data?.length == 2
+                              ? 6
+                              : null
+                          }
+                          md={
+                            nftsByCollectionIdRes?.data?.length >= 3
+                              ? 4
+                              : nftsByCollectionIdRes?.data?.length == 1
+                              ? 12
+                              : nftsByCollectionIdRes?.data?.length == 2
+                              ? 6
+                              : null
+                          }
+                          sm={nftsByCollectionIdRes?.data?.length >= 3 ? 6 : 12}
+                          xs={12}
+                          sx={{
+                            display: "flex",
+                            flexDirection: "row",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <Link
+                            to={`/nft/${v?.tokenAddress}/${v?.tokenId}`}
+                            style={{
+                              textDecoration: "none",
+                            }}
+                          >
+                            <CollectionCard
+                              key={i}
+                              heading={v?.name}
+                              description={v?.description}
+                              coverImage={v?.image}
+                            />
+                          </Link>
+                        </Grid>
+                      );
+                    })}
+                </Grid>
+
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Pagination
+                    count={nftsByCollectionIdRes?.totalPages}
+                    page={pageCount}
+                    onChange={handleChangePagination}
+                  />
+                </Box>
+              </Box>
+            ) : (
+              <Box sx={{ mt: "50px" }}>
+                <Typography sx={{ textAlign: "center" }}>
+                  No data found
+                </Typography>
+              </Box>
+            )}
+          </Box>
         </Box>
-      </Box>
+      ) : (
+        <ScreenLoading />
+      )}
 
       <Footer />
     </Box>

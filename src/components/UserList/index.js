@@ -3,6 +3,7 @@ import styles from "./UserList.module.sass";
 import { Box, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import BookmarkRemoveRoundedIcon from "@mui/icons-material/BookmarkRemoveRounded";
+import userImg from "./circle_2.png";
 
 export default function UserList() {
   const theme = useTheme();
@@ -26,12 +27,12 @@ export default function UserList() {
           return (
             <Box className={styles.user}>
               <Box className={styles.profile}>
-                <img src="./ozean_Images/Images/circle_2.png" />
+                <img src={userImg} />
                 <Box className={styles.name}>
                   <Typography variant="body2" sx={{ color: "text.primary" }}>
-                    Meka Vers
+                    Meta Vers
                   </Typography>
-                  <Typography variant="body2">@meka</Typography>
+                  <Typography variant="body2">@meta</Typography>
                 </Box>
               </Box>
               {/* <img src="./ozean_Images/Icons/Bookmark.svg" /> */}

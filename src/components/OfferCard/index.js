@@ -3,6 +3,7 @@ import styles from "./OfferCard.module.sass";
 import { Box, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import FlakyRoundedIcon from "@mui/icons-material/FlakyRounded";
+import cardImg from "./Rectangle 10@4x.png";
 
 export default function OfferCard() {
   const theme = useTheme();
@@ -16,10 +17,7 @@ export default function OfferCard() {
         }}
       >
         <Box className={styles.img}>
-          <img
-            src="./ozean_Images/Images/Rectangle 10@4x.png"
-            alt="cant load image"
-          />
+          <img src={cardImg} alt="cant load image" />
         </Box>
         <Box className={styles.lowerCard}>
           <Typography sx={{ fontWeight: "bold", color: "background.fontClr" }}>

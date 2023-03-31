@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import { uploadIMGToPinata, uploadJSONTOPinata } from "./PinataAPI";
-import { getSigner, NexusTokenContract, getChainID } from "./Instances";
+import { getSigner, NexusTokenContract, getChainID } from "./use-Instances";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createNftAction } from "../Redux/actions";
@@ -86,8 +86,8 @@ const MintNFTController = () => {
               setTimeout(() => {
                 dispatch(createNftAction(formDataNFT));
                 setTimeout(() => {
-                  navigate("/profile");
                   setLoading(false);
+                  navigate("/profile");
                 }, 500);
               }, 1000);
             }

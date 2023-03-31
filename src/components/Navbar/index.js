@@ -36,13 +36,15 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { useWeb3React } from "@web3-react/core";
 import { injected } from "../walletweb3/connectors";
 import { ethers } from "ethers";
-import { ConnectWalelt } from "../../blockchain/Instances";
+import { ConnectWalelt } from "../../blockchain/use-Instances";
 import { saveWalletAddressAction } from "../../Redux/actions";
 import loginReducer from "../../Redux/reducers/loginReducer";
 import { dashUserDataAction } from "../../Redux/actions";
 import Tooltip from "@mui/material/Tooltip";
 import LogoDark from "./LogoForBlackNavbar.png";
 import LogoWhite from "./LogoForWhiteNavbar.png";
+import { saveChainIdAction } from "../../Redux/actions";
+import ArrowImg from "./Arrow - Left Circle.svg";
 
 export default function Navbar(props) {
   const theme = useTheme();
@@ -54,9 +56,10 @@ export default function Navbar(props) {
 
   const ProfileData = useSelector((state) => state.dashUserDataReducer.users);
 
+  const { connect } = ConnectWalelt();
   const connectWeb3Wallet = async () => {
     try {
-      var result = await ConnectWalelt();
+      var result = await connect();
       console.log("this is result", result);
       if (result.success == true) {
         setConnectedAccount();
@@ -78,6 +81,7 @@ export default function Navbar(props) {
         }
         dispatch(loginAction(formData));
         dispatch(saveWalletAddressAction(result.accounts));
+        dispatch(saveChainIdAction(result?.network));
       } else {
       }
     } catch (error) {
@@ -510,7 +514,7 @@ export default function Navbar(props) {
             <Box className={styles.icon}>
               <img
                 onClick={toggleDrawer("right", true)}
-                src="./ozean_Images/Icons/Arrow - Left Circle.svg"
+                src={ArrowImg}
                 alt="cant load image"
               />
             </Box>

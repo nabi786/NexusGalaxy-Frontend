@@ -8,17 +8,6 @@ export const loginAction = (formData) => async (dispatch) => {
   axios({
     method: "post",
     url: `${BASE_URL}api/auth/profile/create`,
-    // data: {
-    //   address: walletadress,
-    //   firstName: "",
-    //   lastName: "",
-    //   description: "",
-    //   // avatar: "",
-    //   // background: "",
-    //   twitter: "",
-    //   facebook: "",
-    //   instagram: "",
-    // },
     data: formData,
   }).then((response) => {
     console.log("resLoginData", response.data.data.token);
@@ -66,6 +55,16 @@ export const saveWalletAddressAction = (wallet) => async (dispatch) => {
 
 // -------------Save Wallet Address Action ends here ---------------
 
+// ---------SaveChainID action starts from here -----------------
+
+export const saveChainIdAction = (chainId) => async (dispatch) => {
+  const retrnObj = { type: "ChainID", payload: chainId };
+  console.log("ObjectReturnChainID", retrnObj);
+  dispatch(retrnObj);
+};
+
+// ---------SaveChainID action ends here ------------------------
+
 // -------------- createNFT Action starts here --------------
 
 export const createNftAction = (formDataNFT) => async (dispatch) => {
@@ -88,19 +87,6 @@ export const createNftAction = (formDataNFT) => async (dispatch) => {
           timer: 2000,
         });
       }
-      // if (response.status === 500) {
-      //   Swal.fire(
-      //     "Failed",
-      //     response.status,
-      //     "error",
-
-      //     {
-      //       buttons: false,
-      //       timer: 2000,
-      //     }
-      //   );
-      // }
-
       const retrnObj = { type: "CreateNFT", payload: response };
       console.log("ObjectReturn", retrnObj);
       dispatch(retrnObj);
@@ -310,3 +296,98 @@ export const updateCollectionAction = (formData) => async (dispatch) => {
 };
 
 // ----------- UpdateCollectionAction ends here -----------------------
+
+//------------- GetNFTbyCollectionID Action starts from here -----------
+
+export const getNFTbyCollectionIdAction =
+  (id, pageCount, chainIdGet) => async (dispatch) => {
+    axios({
+      method: "post",
+      url: `${BASE_URL}api/collection/getNftsByCollectionID`,
+      data: {
+        id: id,
+        size: 6,
+        page: pageCount,
+        chainId: chainIdGet,
+      },
+    }).then((response) => {
+      console.log("NFTbyCollectionID", response);
+      const retrnObj = { type: "NFTbyCollectionID", payload: response.data };
+      dispatch(retrnObj);
+    });
+  };
+
+//------------- GetNFTbyCollectionID Action ends here ------------------
+
+// ------------ GetSingleNFT action starts from here -----------------
+
+export const getSingleNFTAction =
+  (tokenId, tokenAddress) => async (dispatch) => {
+    const accessToken = localStorage?.getItem("authToken");
+    axios({
+      method: "post",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+      url: `${BASE_URL}api/nft/single`,
+      data: {
+        tokenId: tokenId,
+        tokenAddress: tokenAddress,
+      },
+    })
+      .then((response) => {
+        console.log("GetSingleNFTRes", response);
+        const retrnObj = { type: "GetSingleNFT", payload: response.data };
+        dispatch(retrnObj);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+// ------------ GetSingleNFT action ends here -----------------
+
+// ---------------PHP API Action ----------------------
+export const phpAPiGET = () => async (dispatch) => {
+  axios({
+    method: "GET",
+    url: "https://laravel-taskly.gbsprojects.xyz/api/admin_all_project",
+  })
+    .then((response) => {
+      console.log("GetProjectsRes", response);
+      const retrnObj = { type: "GetProjects", payload: response.data };
+      dispatch(retrnObj);
+    })
+    .catch((error) => {
+      console.log("PHP_API_Error", error);
+    });
+};
+
+// ---------------PHP API Action ----------------------
+
+// ------------- Put NFT On Sale Action starts from here -----------
+
+export const putNftOnSaleAction = (id, price) => async (dispatch) => {
+  const accessToken = localStorage?.getItem("authToken");
+  axios({
+    method: "post",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+    url: `${BASE_URL}api/nft/update`,
+    data: {
+      id: id,
+      price: price,
+    },
+  })
+    .then((response) => {
+      console.log("PutNFTonSaleRes", response);
+      const retrnObj = { type: "PutNFTonSale", payload: response.data };
+      dispatch(retrnObj);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
+
+// ------------- Put NFT On Sale Action ends here -----------

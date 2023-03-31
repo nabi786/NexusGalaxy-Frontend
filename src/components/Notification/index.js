@@ -2,6 +2,7 @@ import React from "react";
 import styles from "./Notification.module.sass";
 import { Box, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import notificationImg from "./circle_3.png";
 
 export default function Notification() {
   const theme = useTheme();
@@ -25,10 +26,7 @@ export default function Notification() {
           return (
             <Box className={styles.container}>
               <Box className={styles.profile}>
-                <img
-                  src="./ozean_Images/Images/circle_3.png"
-                  alt="cant load image"
-                />
+                <img src={notificationImg} alt="cant load image" />
               </Box>
               <Box className={styles.text}>
                 <Typography variant="body2" sx={{ color: "text.primary" }}>

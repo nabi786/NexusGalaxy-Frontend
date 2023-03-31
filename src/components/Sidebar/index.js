@@ -9,6 +9,8 @@ import { AiOutlineClose } from "react-icons/ai";
 import { Box } from "@mui/material";
 import logo from "./Ef_Logo2.png";
 import { useTheme } from "@mui/material/styles";
+import logoBlack from "./LogoForBlack.png";
+import logoWhite from "./LogoForWhite2.png";
 
 export default function ({ closeBtnClickHandler }) {
   const [close, setclose] = useState(false);
@@ -37,11 +39,7 @@ export default function ({ closeBtnClickHandler }) {
         <Box className={styles.logo}>
           <Link to={"/"}>
             <img
-              src={
-                theme.palette.mode === "dark"
-                  ? "./assets/LogoForBlack.png"
-                  : "./assets/LogoForWhite2.png"
-              }
+              src={theme.palette.mode === "dark" ? logoBlack : logoWhite}
               width="250px"
             />
           </Link>

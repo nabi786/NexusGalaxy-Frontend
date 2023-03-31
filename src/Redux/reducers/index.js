@@ -11,6 +11,11 @@ import collectionByAddressReducer from "./collectionByAddressReducer";
 import deleteCollectionReducer from "./deleteCollectionReducer";
 import getAllCategoriesReducer from "./getAllCategoriesReducer";
 import updateCollectionReducer from "./updateCollectionReducer";
+import nftByCollectionIdReducer from "./nftByCollectionIdReducer";
+import saveChainIdReducer from "./saveChainIdReducer";
+import getSingleNFTReducer from "./getSingleNFTReducer";
+import phpAPIReducer from "./phpAPIReducer";
+import putNftOnSaleReducer from "./putNftOnSaleReducer";
 
 const rootReducer = combineReducers({
   loginReducer,
@@ -25,6 +30,11 @@ const rootReducer = combineReducers({
   deleteCollectionReducer,
   getAllCategoriesReducer,
   updateCollectionReducer,
+  nftByCollectionIdReducer,
+  saveChainIdReducer,
+  getSingleNFTReducer,
+  phpAPIReducer,
+  putNftOnSaleReducer,
 });
 
 export default rootReducer;
